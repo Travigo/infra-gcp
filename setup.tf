@@ -1,28 +1,28 @@
 terraform {
-  # backend "gcs" { 
-  #   bucket  = "britbus-infra"
-  #   prefix  = "terraform/ovh/state"
-  # }
+  backend "gcs" { 
+    bucket  = "travigo-infra"
+    prefix  = "terraform/state"
+  }
   required_providers {
     google = {
-      source  = "hashicorp/google-beta"
-      version = "4.47.0"
+      source  = "hashicorp/google"
+      version = "5.8.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.22.0"
+      version = "2.24.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "2.10.1"
+      version = "2.12.1"
     }
     cloudflare = {
       source = "cloudflare/cloudflare"
-      version = "4.11.0"
+      version = "4.20.0"
     }
   }
 
-  required_version = ">= 1.1"
+  required_version = ">= 1.5"
 }
 
 provider "google" {
@@ -30,17 +30,23 @@ provider "google" {
   region  = var.gcp_region
 }
 
+provider "cloudflare" {
+  email      = var.cloudflare_email
+  api_key    = var.cloudflare_token
+}
+
+data "google_client_config" "current" {}
+
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  host     = "https://${google_container_cluster.primary.endpoint}"
+  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
+  token                  = data.google_client_config.current.access_token
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"
+    host     = "https://${google_container_cluster.primary.endpoint}"
+    cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
+    token                  = data.google_client_config.current.access_token
   }
-}
-
-provider "cloudflare" {
-  email      = var.cloudflare_email
-  api_key    = var.cloudflare_token
 }

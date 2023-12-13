@@ -1,11 +1,3 @@
-# resource "kubernetes_namespace" "mongodb" {
-#   metadata {
-#     name        = "mongodb"
-#     annotations = {}
-#     labels      = {}
-#   }
-# }
-
 resource "helm_release" "mongodb-operator" {
   name       = "mongodb-operator"
 
@@ -13,8 +5,6 @@ resource "helm_release" "mongodb-operator" {
   chart      = "community-operator"
 
   version = "0.8.3"
-
-  # namespace = kubernetes_namespace.mongodb.metadata[0].name
 
   set {
     name  = "operator.resources.limits.cpu"
@@ -26,11 +16,11 @@ resource "helm_release" "mongodb-operator" {
   }
   set {
     name  = "operator.resources.requests.cpu"
-    value = "10m"
+    value = "1m"
   }
   set {
     name  = "operator.resources.requests.memory"
-    value = "50Mi"
+    value = "1Mi"
   }
 }
 
@@ -42,7 +32,6 @@ resource "random_password" "mongodb-database-password" {
 resource "kubernetes_secret" "mongodb-database-password" {
   metadata {
     name      = "mongodb-database-password"
-    # namespace = kubernetes_namespace.mongodb.metadata[0].name
   }
 
   data = {
@@ -63,7 +52,6 @@ resource "kubernetes_manifest" "mongodb-database-crd" {
 
     metadata = {
       name = "travigo-mongodb"
-      # namespace = kubernetes_namespace.mongodb.metadata[0].name
       namespace = "default"
     }
 
@@ -111,7 +99,7 @@ resource "kubernetes_manifest" "mongodb-database-crd" {
               spec = {
                 resources = {
                   requests = {
-                    storage = "40Gi"
+                    storage = "200Gi"
                   }
                 }
               }
@@ -137,8 +125,8 @@ resource "kubernetes_manifest" "mongodb-database-crd" {
                   name = "mongod"
                   resources = {
                     limits = {
-                      cpu = "6"
-                      memory = "16Gi"
+                      cpu = "14"
+                      memory = "28Gi"
                     }
                     requests = {
                       cpu = "1"
