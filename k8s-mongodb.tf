@@ -97,6 +97,7 @@ resource "kubernetes_manifest" "mongodb-database-crd" {
                 name = "data-volume"
               }
               spec = {
+                storageClassName = "premium-rwo"
                 resources = {
                   requests = {
                     storage = "200Gi"
@@ -126,7 +127,7 @@ resource "kubernetes_manifest" "mongodb-database-crd" {
                   resources = {
                     limits = {
                       cpu = "14"
-                      memory = "28Gi"
+                      memory = "40Gi"
                     }
                     requests = {
                       cpu = "1"
