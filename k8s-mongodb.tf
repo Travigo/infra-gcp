@@ -4,7 +4,7 @@ resource "helm_release" "mongodb-operator" {
   repository = "https://mongodb.github.io/helm-charts"
   chart      = "community-operator"
 
-  version = "0.8.3"
+  version = "0.9.0"
 
   set {
     name  = "operator.resources.limits.cpu"
@@ -58,7 +58,7 @@ resource "kubernetes_manifest" "mongodb-database-crd" {
     spec = {
       members = 1
       type = "ReplicaSet"
-      version = "6.0.11"
+      version = "6.0.13"
 
       security = {
         authentication = {
