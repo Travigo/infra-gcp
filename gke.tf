@@ -48,12 +48,49 @@ resource "google_container_node_pool" "spot_nodes" {
 
     spot  = true
 
-    machine_type = "e2-custom-12-40960" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
+    machine_type = "e2-custom-12-36864" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
     disk_size_gb = 32
 
     tags         = ["gke-node", "${var.gcp_project_id}-gke"]
     metadata = {
       disable-legacy-endpoints = "true"
+    }
+  }
+}
+
+# Batch Burst Nodes
+resource "google_container_node_pool" "batch_burst_nodes" {
+  name       = "${google_container_cluster.primary.name}-batch-burst-node-pool"
+  location   = var.gcp_zone
+  cluster    = google_container_cluster.primary.name
+
+  autoscaling {
+    min_node_count = 0
+    max_node_count = 1
+  }
+
+  node_config {
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
+
+    labels = {
+      env = var.gcp_project_id
+    }
+
+    machine_type = "e2-custom-6-49152"
+    disk_size_gb = 32
+
+    tags         = ["gke-node", "${var.gcp_project_id}-gke"]
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+
+    taint {
+      effect = "NO_SCHEDULE"
+      key = "BATCH_BURST"
+      value = "true"
     }
   }
 }
