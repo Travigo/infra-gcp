@@ -79,7 +79,7 @@ resource "google_container_node_pool" "batch_burst_nodes" {
       env = var.gcp_project_id
     }
 
-    machine_type = "e2-custom-6-49152"
+    machine_type = "e2-custom-8-65536"
     disk_size_gb = 32
 
     tags         = ["gke-node", "${var.gcp_project_id}-gke"]
