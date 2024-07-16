@@ -34,7 +34,7 @@ resource "google_container_node_pool" "spot_nodes" {
   name       = "${google_container_cluster.primary.name}-spot-node-pool"
   location   = var.gcp_zone
   cluster    = google_container_cluster.primary.name
-  node_count = 1
+  node_count = 2
 
   node_config {
     oauth_scopes = [
@@ -48,7 +48,7 @@ resource "google_container_node_pool" "spot_nodes" {
 
     spot  = true
 
-    machine_type = "e2-custom-12-36864" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
+    machine_type = "e2-custom-10-28672" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
     disk_size_gb = 32
 
     tags         = ["gke-node", "${var.gcp_project_id}-gke"]
