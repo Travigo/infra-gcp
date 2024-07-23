@@ -30,11 +30,11 @@ resource "google_container_cluster" "primary" {
 }
 
 # Spot Nodes
-resource "google_container_node_pool" "spot_nodes" {
-  name       = "${google_container_cluster.primary.name}-spot-node-pool"
+resource "google_container_node_pool" "spot_runner_nodes" {
+  name       = "spot-runner-node-pool"
   location   = var.gcp_zone
   cluster    = google_container_cluster.primary.name
-  node_count = 2
+  node_count = 1
 
   node_config {
     oauth_scopes = [
@@ -48,7 +48,7 @@ resource "google_container_node_pool" "spot_nodes" {
 
     spot  = true
 
-    machine_type = "e2-custom-10-28672" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
+    machine_type = "e2-custom-8-22528" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
     disk_size_gb = 32
 
     tags         = ["gke-node", "${var.gcp_project_id}-gke"]
@@ -58,9 +58,44 @@ resource "google_container_node_pool" "spot_nodes" {
   }
 }
 
+# Spot Nodes
+resource "google_container_node_pool" "spot_database_nodes" {
+  name       = "spot-database-node-pool"
+  location   = var.gcp_zone
+  cluster    = google_container_cluster.primary.name
+  node_count = 1
+
+  node_config {
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
+
+    labels = {
+      env = var.gcp_project_id
+    }
+
+    spot  = true
+
+    machine_type = "e2-custom-8-30720" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
+    disk_size_gb = 32
+
+    tags         = ["gke-node", "${var.gcp_project_id}-gke"]
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+
+    taint {
+      effect = "NO_SCHEDULE"
+      key = "DATABASE"
+      value = "true"
+    }
+  }
+}
+
 # Batch Burst Nodes
 resource "google_container_node_pool" "batch_burst_nodes" {
-  name       = "${google_container_cluster.primary.name}-batch-burst-node-pool"
+  name       = "batch-burst-node-pool"
   location   = var.gcp_zone
   cluster    = google_container_cluster.primary.name
 

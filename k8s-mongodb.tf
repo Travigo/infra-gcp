@@ -121,13 +121,21 @@ resource "kubernetes_manifest" "mongodb-database-crd" {
 
           template = {
             spec = {
+              tolerations = [
+                {
+                  effect = "NoSchedule"
+                  key = "DATABASE"
+                  operator = "Equal"
+                  value = "true"
+                }
+              ]
               containers = [
                 {
                   name = "mongod"
                   resources = {
                     limits = {
                       cpu = "14"
-                      memory = "40Gi"
+                      memory = "27Gi"
                     }
                     requests = {
                       cpu = "1"
