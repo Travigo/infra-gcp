@@ -48,7 +48,7 @@ resource "google_container_node_pool" "spot_runner_nodes" {
 
     spot  = true
 
-    machine_type = "e2-custom-10-20480" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
+    machine_type = "e2-custom-8-16384"
     disk_size_gb = 32
 
     tags         = ["gke-node", "${var.gcp_project_id}-gke"]
@@ -77,7 +77,7 @@ resource "google_container_node_pool" "spot_database_nodes" {
 
     spot  = true
 
-    machine_type = "e2-custom-10-30720" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
+    machine_type = "e2-custom-8-28672" # 8 CPU, 20GB RAM e2-custom-8-18432  maybe e2-custom-10-20480
     disk_size_gb = 32
 
     tags         = ["gke-node", "${var.gcp_project_id}-gke"]
