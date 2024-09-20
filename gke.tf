@@ -58,7 +58,7 @@ resource "google_container_node_pool" "spot_runner_nodes" {
   }
 }
 
-# Spot Nodes
+# Database Nodes
 resource "google_container_node_pool" "spot_database_nodes" {
   name       = "spot-database-node-pool"
   location   = var.gcp_zone
@@ -92,6 +92,41 @@ resource "google_container_node_pool" "spot_database_nodes" {
     }
   }
 }
+
+# Realtime Nodes
+# resource "google_container_node_pool" "spot_realtime_database_nodes" {
+#   name       = "spot-realtime-database-node-pool"
+#   location   = var.gcp_zone
+#   cluster    = google_container_cluster.primary.name
+#   node_count = 2
+
+#   node_config {
+#     oauth_scopes = [
+#       "https://www.googleapis.com/auth/logging.write",
+#       "https://www.googleapis.com/auth/monitoring",
+#     ]
+
+#     labels = {
+#       env = var.gcp_project_id
+#     }
+
+#     spot  = true
+
+#     machine_type = "e2-custom-4-8192"
+#     disk_size_gb = 32
+
+#     tags         = ["gke-node", "${var.gcp_project_id}-gke"]
+#     metadata = {
+#       disable-legacy-endpoints = "true"
+#     }
+
+#     taint {
+#       effect = "NO_SCHEDULE"
+#       key = "DATABASE-REALTIME"
+#       value = "true"
+#     }
+#   }
+# }
 
 # Batch Burst Nodes
 resource "google_container_node_pool" "batch_burst_nodes" {
