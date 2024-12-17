@@ -1,6 +1,6 @@
 module "travigo-assistant-workload-identity" {
   source  = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
-  version = "31.0.0"
+  version = "35.0.0"
 
   name       = "travigo-assistant"
   namespace  = "default"
