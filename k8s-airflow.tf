@@ -19,6 +19,7 @@ resource "helm_release" "airflow" {
   values = [
   <<-EOF
     webserverSecretKey: notsosecrettravigo
+    multiNamespaceMode: true
 
     createUserJob:
       useHelmHooks: false
