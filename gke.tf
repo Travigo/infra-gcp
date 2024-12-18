@@ -48,7 +48,7 @@ resource "google_container_node_pool" "spot_runner_nodes" {
 
     spot  = true
 
-    machine_type = "e2-custom-8-17408"
+    machine_type = "e2-custom-8-18432"
     disk_size_gb = 32
 
     tags         = ["gke-node", "${var.gcp_project_id}-gke"]
