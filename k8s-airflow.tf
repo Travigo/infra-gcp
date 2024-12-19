@@ -43,7 +43,7 @@ resource "helm_release" "airflow" {
       gitSync:
         enabled: true
         repo: https://github.com/travigo/travigo.git
-        branch: airflow-test
+        branch: main
         subPath: "airflow/dags"
         period: 30s
   EOF
