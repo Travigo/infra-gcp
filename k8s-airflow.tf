@@ -36,6 +36,13 @@ resource "helm_release" "airflow" {
         hosts:
         - name: airflow.travigo.app
 
+    webserver:
+      startupProbe:
+        timeoutSeconds: 20
+        failureThreshold: 20
+        periodSeconds: 10
+        scheme: HTTP
+
     dags:
       persistence:
         enabled: true
