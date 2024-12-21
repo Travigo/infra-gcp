@@ -129,8 +129,8 @@ resource "google_container_node_pool" "spot_database_nodes" {
 # }
 
 # Batch Burst Nodes
-resource "google_container_node_pool" "batch_burst_nodes" {
-  name       = "batch-burst-node-pool"
+resource "google_container_node_pool" "large_batch_burst_nodes" {
+  name       = "large-batch-burst"
   location   = var.gcp_zone
   cluster    = google_container_cluster.primary.name
 
@@ -160,7 +160,44 @@ resource "google_container_node_pool" "batch_burst_nodes" {
     taint {
       effect = "NO_SCHEDULE"
       key = "BATCH_BURST"
-      value = "true"
+      value = "large"
+    }
+  }
+}
+
+# Batch Burst Nodes
+resource "google_container_node_pool" "small_batch_burst_nodes" {
+  name       = "small-batch-burst"
+  location   = var.gcp_zone
+  cluster    = google_container_cluster.primary.name
+
+  autoscaling {
+    min_node_count = 0
+    max_node_count = 1
+  }
+
+  node_config {
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
+
+    labels = {
+      env = var.gcp_project_id
+    }
+
+    machine_type = "e2-custom-2-8192"
+    disk_size_gb = 32
+
+    tags         = ["gke-node", "${var.gcp_project_id}-gke"]
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+
+    taint {
+      effect = "NO_SCHEDULE"
+      key = "BATCH_BURST"
+      value = "small"
     }
   }
 }
