@@ -160,7 +160,7 @@ resource "google_container_node_pool" "large_batch_burst_nodes" {
     taint {
       effect = "NO_SCHEDULE"
       key = "BATCH_BURST"
-      value = "large"
+      value = "true"
     }
   }
 }
@@ -196,8 +196,8 @@ resource "google_container_node_pool" "small_batch_burst_nodes" {
 
     taint {
       effect = "NO_SCHEDULE"
-      key = "BATCH_BURST"
-      value = "small"
+      key = "SMALL_BATCH_BURST"
+      value = "true"
     }
   }
 }
